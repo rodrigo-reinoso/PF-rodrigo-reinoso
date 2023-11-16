@@ -17,7 +17,8 @@ function guardarProductoEnLocalStorage(producto, cantidad) {
     nombre: producto.nombre,
     precio: producto.precio,
     cantidad: parseInt(cantidad),
-    imagen: `.${producto.imagen}`
+    imagen: `${producto.imagen}`,
+    total: producto.precio * cantidad
   };
 
   // Si no hay productos cargados a Local Storage
@@ -34,6 +35,7 @@ function guardarProductoEnLocalStorage(producto, cantidad) {
       carrito.push(agregarProducto);
     } else {
       carrito[buscarIndiceDeProducto].cantidad += parseInt(cantidad);
+      carrito[buscarIndiceDeProducto].total += parseInt(agregarProducto.total);
     }
   }
   // Actualizar Local Storage
@@ -94,11 +96,21 @@ function renderizarProductos(productos) {
       const cantidad = inputBoton.value;
       if (cantidad >= 1) {
         guardarProductoEnLocalStorage(producto, cantidad);
+        Swal.fire({
+          title: '¡Agregado al Carrito!',
+          icon: 'success',
+          timer: 1500
+        });
       } else {
-        alert("Debe ingresar un número mayor a 0.")
+        Swal.fire({
+          title: 'Error!',
+          text: 'Debe Ingresar un número mayor a 0.',
+          icon: 'error',
+          confirmButtonText: 'Cerrar'
+        });
       }
+      renderizarProductos(productos);
     });
-
     // Agregar elementos al DOM
     contenedorBoton.append(boton, inputBoton);
     divContenido.append(titulo, contenedorBoton, precio);
@@ -111,12 +123,11 @@ function renderizarProductos(productos) {
 const productos = [
   new Producto(0, "Camiseta Oficial 2023", 23000, 12, "../recursos/tienda/camiseta-oficial-calidad.webp"),
   new Producto(1, "Camiseta Alternativa 2023", 21000, 8, "../recursos/tienda/camiseta-alternativa-negra-calidad.webp"),
-  new Producto(2, "Camiseta Arquero 2023", 19000, 5, "../recursos/../recursos/tienda/camiseta-arquero-calidad.webp"),
+  new Producto(2, "Camiseta Arquero 2023", 19000, 5, "../recursos/tienda/camiseta-arquero-calidad.webp"),
   new Producto(3, "Musculosa de entrenamiento 2023", 15000, 10, "../recursos/tienda/entrenamiento-calidad.webp"),
   new Producto(4, "Buzo de concentración 2023", 20000, 7, "../recursos/tienda/buzo-calidad.webp"),
   new Producto(5, "Buzo de entrenamiento 2023", 18000, 6, "../recursos/tienda/buxzo-negro.jpg"),
 ];
-
 
 let carrito = [];
 console.log(carrito)
