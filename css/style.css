@@ -55,7 +55,10 @@ h1 {
   border-radius: 7px;
   font-family: "Assistant", sans-serif;
 }
-
+.boton-finalizar-compra{
+  display: flex;
+  justify-content: center;
+}
 .swal2-confirm.swal2-styled {
   background-color: red;
   border: 2px solid darkred;

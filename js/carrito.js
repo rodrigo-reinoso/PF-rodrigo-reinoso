@@ -51,6 +51,7 @@ function renderizarCarrito(carrito) {
     }
 }
 
+
 let carrito = [];
 
 obtenerProductosDeLocalStorage();
