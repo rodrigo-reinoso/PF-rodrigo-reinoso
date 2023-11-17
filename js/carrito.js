@@ -53,7 +53,7 @@ function renderizarCarrito(carrito) {
 
 function calcularTotal(productos){
     const totalCompra = productos.reduce((acc,producto) =>{
-        return acc + producto.precio;
+        return acc + producto.total;
     }, 0);
     return totalCompra;
 }
