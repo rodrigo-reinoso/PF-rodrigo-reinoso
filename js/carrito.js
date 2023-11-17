@@ -51,8 +51,65 @@ function renderizarCarrito(carrito) {
     }
 }
 
+function calcularTotal(productos){
+    const totalCompra = productos.reduce((acc,producto) =>{
+        return acc + producto.precio;
+    }, 0);
+    return totalCompra;
+}
+
+function mostrarTotal(productos){
+    const contenedorTotalCarrito = document.getElementById("contenedorTotalCarrito");
+    const totalCompra =  calcularTotal(productos);
+    const total = document.getElementById("total");
+    total.innerText = `TOTAL: $${totalCompra}`;
+
+    if(carrito.length <= 0){
+        total.classList.add("d-none");
+        contenedorTotalCarrito.classList.add("d-none");
+
+    } else {
+        total.classList.remove("d-none");
+        contenedorTotalCarrito.classList.remove("d-none");
+    }
+}
+
+function finalizarCompra() {
+    const botonFinalizarCompra = document.getElementById("finalizarCompra");
+    
+    if (carrito.length <= 0) {
+        botonFinalizarCompra.classList.add("d-none");
+    } else {
+        botonFinalizarCompra.classList.remove("d-none");
+    }
+
+    botonFinalizarCompra.innerHTML = ""; 
+
+    const botonEvento = document.createElement("h4");
+    botonEvento.innerText = "Finalizar Compra";
+    botonEvento.className = "btn btn-danger";
+
+    botonFinalizarCompra.appendChild(botonEvento);
+
+    botonEvento.addEventListener("click", () => {
+        localStorage.setItem("carrito", JSON.stringify([]));
+        const totalCompra = calcularTotal(carrito);
+        carrito = []; 
+        obtenerProductosDeLocalStorage();
+        Swal.fire({
+            title: "¡Finalizando su compra!",
+            text: `Su total a abonar es: $${totalCompra}. Lo esperamos en nuestro local para retirar su pedido.`,
+            icon: "success"
+        });
+       
+        renderizarCarrito(carrito);
+        finalizarCompra(); 
+    });
+}
+
 
 let carrito = [];
 
 obtenerProductosDeLocalStorage();
 renderizarCarrito(carrito);
+finalizarCompra();

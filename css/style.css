@@ -55,7 +55,8 @@ h1 {
   border-radius: 7px;
   font-family: "Assistant", sans-serif;
 }
-.boton-finalizar-compra{
+
+#finalizarCompra{
   display: flex;
   justify-content: center;
 }
