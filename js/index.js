@@ -1,4 +1,4 @@
-
+// CLASES
 class Producto {
   constructor(id, nombre, precio, stock, imagen) {
     this.id = id;
@@ -10,6 +10,19 @@ class Producto {
 }
 
 // FUNCIONES
+
+function obtenerProdDeJSON() {
+  return new Promise((resolve, reject) => {
+     fetch('../productos.json').then((response) => {
+        return response.json();
+     }).then((responseJson) => {
+        for (const producto of responseJson) {
+           productos.push(new Producto(...producto));
+        }
+        resolve();
+     });
+  });
+}
 
 function guardarProductoEnLocalStorage(producto, cantidad) {
 
@@ -120,16 +133,11 @@ function renderizarProductos(productos) {
     contenedorProductos.append(divCard);
   }
 }
-const productos = [
-  new Producto(0, "Camiseta Oficial 2023", 23000, 12, "../recursos/tienda/camiseta-oficial-calidad.webp"),
-  new Producto(1, "Camiseta Alternativa 2023", 21000, 8, "../recursos/tienda/camiseta-alternativa-negra-calidad.webp"),
-  new Producto(2, "Camiseta Arquero 2023", 19000, 5, "../recursos/tienda/camiseta-arquero-calidad.webp"),
-  new Producto(3, "Musculosa de entrenamiento 2023", 15000, 10, "../recursos/tienda/entrenamiento-calidad.webp"),
-  new Producto(4, "Buzo de concentración 2023", 20000, 7, "../recursos/tienda/buzo-calidad.webp"),
-  new Producto(5, "Buzo de entrenamiento 2023", 18000, 6, "../recursos/tienda/buxzo-negro.jpg"),
-];
+
 
 let carrito = [];
-console.log(carrito)
+const productos = [];
 
-renderizarProductos(productos);
+obtenerProdDeJSON().then(() => {
+  renderizarProductos(productos);
+});
