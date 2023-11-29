@@ -34,25 +34,29 @@ function guardarProductoEnLocalStorage(producto, cantidad) {
     total: producto.precio * cantidad
   };
 
-  // Si no hay productos cargados a Local Storage
-  if (carrito === null) {
+   // Si no hay productos cargados a Local Storage
+   if (carrito === null) {
     carrito = [agregarProducto];
 
-  } else {
-    // Buscar indice de producto en local storage
+ } else {
+    if (agregarProducto.stock >= agregarProducto.cantidad) {
+       agregarProducto.stock -= agregarProducto.cantidad;
+    }
+
     const buscarIndiceDeProducto = carrito.findIndex((el) => {
-      return el.nombre === agregarProducto.nombre;
+       return el.nombre === agregarProducto.nombre;
     });
 
     if (buscarIndiceDeProducto === -1) {
-      carrito.push(agregarProducto);
+       carrito.push(agregarProducto);
     } else {
-      carrito[buscarIndiceDeProducto].cantidad += parseInt(cantidad);
-      carrito[buscarIndiceDeProducto].total += parseInt(agregarProducto.total);
+       carrito[buscarIndiceDeProducto].cantidad += parseInt(cantidad);
+       carrito[buscarIndiceDeProducto].total += parseInt(agregarProducto.total);
+       carrito[buscarIndiceDeProducto].stock -= parseInt(cantidad);
     }
-  }
-  // Actualizar Local Storage
-  localStorage.setItem("carrito", JSON.stringify(carrito));
+ }
+ // Actualizar Local Storage
+ localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
 function obtenerProductosDeLocalStorage() {
@@ -107,19 +111,19 @@ function renderizarProductos(productos) {
 
     boton.addEventListener('click', () => {
       const cantidad = inputBoton.value;
-      if (cantidad >= 1) {
+      if (cantidad >= producto.stock) {
         guardarProductoEnLocalStorage(producto, cantidad);
+        Swal.fire({
+          title: 'Error!',
+          text: `Ingrese una cantidad menor. Stock disponible:${producto.stock} ${producto.nombre}. `,
+          icon: 'error',
+          confirmButtonText: 'Cerrar'
+        });
+      } else {
         Swal.fire({
           title: '¡Agregado al Carrito!',
           icon: 'success',
           timer: 1500
-        });
-      } else {
-        Swal.fire({
-          title: 'Error!',
-          text: 'Debe Ingresar un número mayor a 0.',
-          icon: 'error',
-          confirmButtonText: 'Cerrar'
         });
       }
       renderizarProductos(productos);
@@ -138,6 +142,7 @@ function renderizarProductos(productos) {
 let carrito = [];
 const productos = [];
 
+obtenerProductosDeLocalStorage();
 obtenerProdDeJSON().then(() => {
   renderizarProductos(productos);
 });
