@@ -4,12 +4,12 @@ function obtenerProductosDeLocalStorage() {
 }
 
 function eliminarProductos(producto) {
-    const indeceParaEliminarProducto = carrito.findIndex((el) => {
+    const indiceParaEliminarProducto = carrito.findIndex((el) => {
         return producto.nombre === el.nombre;
     });
 
-    if (indeceParaEliminarProducto !== -1) {
-        carrito.splice(indeceParaEliminarProducto, 1);
+    if (indiceParaEliminarProducto !== -1) {
+        carrito.splice(indiceParaEliminarProducto, 1);
         localStorage.setItem("carrito", JSON.stringify(carrito));
         renderizarCarrito(carrito);
     }

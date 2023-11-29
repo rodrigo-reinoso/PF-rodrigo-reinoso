@@ -111,15 +111,23 @@ function renderizarProductos(productos) {
 
     boton.addEventListener('click', () => {
       const cantidad = inputBoton.value;
-      if (cantidad >= producto.stock) {
-        guardarProductoEnLocalStorage(producto, cantidad);
+      if (cantidad <= 0) {
         Swal.fire({
           title: 'Error!',
-          text: `Ingrese una cantidad menor. Stock disponible:${producto.stock} ${producto.nombre}. `,
+          text: 'Ingrese una cantidad válida mayor a 0.',
+          icon: 'error',
+          confirmButtonText: 'Cerrar'
+        });
+      } else if (cantidad > producto.stock) {
+        
+        Swal.fire({
+          title: 'Error!',
+          text: `Ingrese una cantidad menor. Stock disponible: ${producto.stock} ${producto.nombre}.`,
           icon: 'error',
           confirmButtonText: 'Cerrar'
         });
       } else {
+        guardarProductoEnLocalStorage(producto, cantidad);
         Swal.fire({
           title: '¡Agregado al Carrito!',
           icon: 'success',
@@ -128,6 +136,8 @@ function renderizarProductos(productos) {
       }
       renderizarProductos(productos);
     });
+    
+
     // Agregar elementos al DOM
     contenedorBoton.append(boton, inputBoton);
     divContenido.append(titulo, contenedorBoton, precio);
