@@ -25,38 +25,55 @@ function obtenerProdDeJSON() {
 }
 
 function guardarProductoEnLocalStorage(producto, cantidad) {
+  cantidad = parseInt(cantidad);
 
-  const agregarProducto = {
-    nombre: producto.nombre,
-    precio: producto.precio,
-    cantidad: parseInt(cantidad),
-    imagen: `${producto.imagen}`,
-    total: producto.precio * cantidad
-  };
+  const carritoEnLocalStorage = JSON.parse(localStorage.getItem("carrito")) || [];
 
-   // Si no hay productos cargados a Local Storage
-   if (carrito === null) {
-    carrito = [agregarProducto];
+  const productoExistente = carritoEnLocalStorage.find(item => item.nombre === producto.nombre);
 
- } else {
-    if (agregarProducto.stock >= agregarProducto.cantidad) {
-       agregarProducto.stock -= agregarProducto.cantidad;
+  if (productoExistente) {
+    productoExistente.cantidad += cantidad;
+    productoExistente.total = productoExistente.cantidad * producto.precio;
+    if (productoExistente.cantidad > producto.stock) {
+      Swal.fire({
+        title: 'Error!',
+        text: `Ingrese una cantidad menor. Stock disponible: ${producto.stock} ${producto.nombre}.`,
+        icon: 'error',
+        confirmButtonText: 'Cerrar'
+      });
+      return;
+    }
+  } else {
+    const agregarProducto = {
+      nombre: producto.nombre,
+      precio: producto.precio,
+      cantidad: cantidad,
+      imagen: `${producto.imagen}`,
+      total: producto.precio * cantidad
+    };
+
+    if (agregarProducto.cantidad > producto.stock) {
+      Swal.fire({
+        title: 'Error!',
+        text: `Ingrese una cantidad menor. Stock disponible: ${producto.stock} ${producto.nombre}.`,
+        icon: 'error',
+        confirmButtonText: 'Cerrar'
+      });
+      return;
     }
 
-    const buscarIndiceDeProducto = carrito.findIndex((el) => {
-       return el.nombre === agregarProducto.nombre;
+    carritoEnLocalStorage.push(agregarProducto);
+  }
+
+  localStorage.setItem("carrito", JSON.stringify(carritoEnLocalStorage));
+
+  if (!productoExistente) {
+    Swal.fire({
+      title: '¡Agregado al Carrito!',
+      icon: 'success',
+      timer: 1500
     });
-
-    if (buscarIndiceDeProducto === -1) {
-       carrito.push(agregarProducto);
-    } else {
-       carrito[buscarIndiceDeProducto].cantidad += parseInt(cantidad);
-       carrito[buscarIndiceDeProducto].total += parseInt(agregarProducto.total);
-       carrito[buscarIndiceDeProducto].stock -= parseInt(cantidad);
-    }
- }
- // Actualizar Local Storage
- localStorage.setItem("carrito", JSON.stringify(carrito));
+  }
 }
 
 function obtenerProductosDeLocalStorage() {
