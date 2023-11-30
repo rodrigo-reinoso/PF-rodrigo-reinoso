@@ -65,7 +65,16 @@ function guardarProductoEnLocalStorage(producto, cantidad) {
     carritoEnLocalStorage.push(agregarProducto);
   }
 
-  localStorage.setItem("carrito", JSON.stringify(carritoEnLocalStorage));
+  // Actualizar el stock del producto en el array de productos
+  const indexProducto = productos.findIndex(item => item.nombre === producto.nombre);
+  productos[indexProducto].stock -= cantidad; // Restar la cantidad del carrito al stock
+
+  // Actualizar el stock en el localStorage
+  const productosEnLocalStorage = JSON.parse(localStorage.getItem("productos")) || [];
+  productosEnLocalStorage[indexProducto].stock -= cantidad;
+  localStorage.setItem("productos", JSON.stringify(productosEnLocalStorage));
+
+  localStorage.setItem("carrito", JSON.stringify(carritoEnLocalStorage)); // Actualizar el carrito en el localStorage
 
   if (!productoExistente) {
     Swal.fire({
@@ -165,7 +174,7 @@ function renderizarProductos(productos) {
   }
 }
 
-
+// Inicio del programa
 let carrito = [];
 const productos = [];
 
